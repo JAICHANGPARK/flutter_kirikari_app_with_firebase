@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:share/share.dart';
 
 class _FormData {
   String borrowOrLend = "borrow";
@@ -94,87 +95,106 @@ class _InputFormState extends State<InputForm> {
               onPressed: !deleteFlag
                   ? null
                   : () {
-                      _mainReference.delete();
-                      Navigator.pop(context);
-                    })
+                _mainReference.delete();
+                Navigator.pop(context);
+              }),
+          IconButton(
+            icon: Icon(Icons.share),
+            onPressed: () {
+              if (_formKey.currentState.validate()) {
+                _formKey.currentState.save();
+                Share.share(
+                    "【 " +
+                        (_data.borrowOrLend == "lend" ? "貸" : "借") +
+                        " 】" + _data.stuff +
+                        "\n期限 : " + _data.date.toString().substring(0, 10) +
+                        "\n相手 : " +  _data.user +
+                        "\n#かしかりメモ"
+
+
+                );
+              }
+            },
+          )
         ],
       ),
       body: SafeArea(
           child: Form(
-        key: _formKey,
-        child: ListView(
-          children: <Widget>[
-            SizedBox(
-              height: 16.0,
-            ),
-            RadioListTile(
-                value: "borrow",
-                title: Text("借りた"),
-                groupValue: _data.borrowOrLend,
-                onChanged: (String value) {
-                  print("借りたを");
-                  _setLendOrRent(value);
-                }),
-            RadioListTile(
-                value: "lend",
-                title: Text("貸した"),
-                groupValue: _data.borrowOrLend,
-                onChanged: (String value) {
-                  print("貸したを");
-                  _setLendOrRent(value);
-                }),
-            TextFormField(
-              decoration: new InputDecoration(
-                  icon: const Icon(Icons.person),
-                  hintText: '相手の名前',
-                  labelText: 'Name'),
-              onSaved: (String value) {
-                _data.user = value;
-              },
-              validator: (value) {
-                if (value.isEmpty) {
-                  return "名前は必修入力項目";
-                }
-              },
-              initialValue: _data.user,
-            ),
-            TextFormField(
-              decoration: new InputDecoration(
-                  icon: const Icon(Icons.business_center),
-                  hintText: '借りたもの、貸したもの',
-                  labelText: 'loan'),
-              onSaved: (String value) {
-                _data.stuff = value;
-              },
-              validator: (value) {
-                if (value.isEmpty) {
-                  return "必修入力項目";
-                }
-              },
-              initialValue: _data.stuff,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Text("締め切り日:${_data.date.toString().substring(0, 10)}"),
-            ),
-            RaisedButton(
-              child: const Text("締め切り日変更"),
-              onPressed: () {
-                print("sima kiri ");
-                _selectTime(context).then((time) {
-                  if (time != null && time != _data.date) {
-                    setState(() {
-                      _data.date = time;
-                    });
-                  }
+            key: _formKey,
+            child: ListView(
+              children: <Widget>[
+                SizedBox(
+                  height: 16.0,
+                ),
+                RadioListTile(
+                    value: "borrow",
+                    title: Text("借りた"),
+                    groupValue: _data.borrowOrLend,
+                    onChanged: (String value) {
+                      print("借りたを");
+                      _setLendOrRent(value);
+                    }),
+                RadioListTile(
+                    value: "lend",
+                    title: Text("貸した"),
+                    groupValue: _data.borrowOrLend,
+                    onChanged: (String value) {
+                      print("貸したを");
+                      _setLendOrRent(value);
+                    }),
+                TextFormField(
+                  decoration: new InputDecoration(
+                      icon: const Icon(Icons.person),
+                      hintText: '相手の名前',
+                      labelText: 'Name'),
+                  onSaved: (String value) {
+                    _data.user = value;
+                  },
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return "名前は必修入力項目";
+                    }
+                  },
+                  initialValue: _data.user,
+                ),
+                TextFormField(
+                  decoration: new InputDecoration(
+                      icon: const Icon(Icons.business_center),
+                      hintText: '借りたもの、貸したもの',
+                      labelText: 'loan'),
+                  onSaved: (String value) {
+                    _data.stuff = value;
+                  },
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return "必修入力項目";
+                    }
+                  },
+                  initialValue: _data.stuff,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(
+                      "締め切り日:${_data.date.toString().substring(0, 10)}"),
+                ),
+                RaisedButton(
+                  child: const Text("締め切り日変更"),
+                  onPressed: () {
+                    print("sima kiri ");
+                    _selectTime(context).then((time) {
+                      if (time != null && time != _data.date) {
+                        setState(() {
+                          _data.date = time;
+                        });
+                      }
 //                      showTimePicker(context: context, initialTime:
 //                      );
-                });
-              },
-            )
-          ],
-        ),
-      )),
+                    });
+                  },
+                )
+              ],
+            ),
+          )),
     );
   }
 }

@@ -5,6 +5,8 @@ import 'dart:async';
 import 'package:flutter_kirikari_app/ui/input_ui.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:share/share.dart';
+
 
 void main() => runApp(MyApp());
 
