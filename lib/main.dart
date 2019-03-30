@@ -52,8 +52,13 @@ class _SplashState extends State<Splash> {
   Widget build(BuildContext context) {
     _getUser(context);
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Center(
-        child: const Text("Splash Page"),
+        child: FractionallySizedBox(
+          child: Image.asset('res/image/icon.png'),
+          heightFactor: 0.4,
+          widthFactor: 0.4,
+        )
       ),
     );
   }
