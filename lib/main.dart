@@ -21,9 +21,7 @@ class MyApp extends StatelessWidget {
         '/list': (_) => MyHomePage()
       },
       title: 'かしかりメモ',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData.dark()
 //      home: MyHomePage(),
     );
   }
@@ -77,6 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
     String email, password;
     if (firebaseUser.isAnonymous) {
+      print("사용자 익명 로그인");
       showDialog(
           context: context,
           builder: (context) {
@@ -88,9 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     children: <Widget>[
                       TextFormField(
                         decoration: InputDecoration(
-                            icon: const Icon(Icons.email),
-                            labelText: 'Email'
-                        ),
+                            icon: const Icon(Icons.email), labelText: 'Email'),
                         onSaved: (String value) {
                           email = value;
                         },
@@ -100,12 +97,10 @@ class _MyHomePageState extends State<MyHomePage> {
                           }
                         },
                       ),
-
                       TextFormField(
                         decoration: InputDecoration(
                             icon: const Icon(Icons.vpn_key),
-                            labelText: 'password'
-                        ),
+                            labelText: 'password'),
                         onSaved: (String value) {
                           password = value;
                         },
@@ -119,8 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         },
                       )
                     ],
-                  )
-              ),
+                  )),
               actions: <Widget>[
                 FlatButton(
                   child: Text("Cancle"),
@@ -128,21 +122,19 @@ class _MyHomePageState extends State<MyHomePage> {
                     Navigator.pop(context);
                   },
                 ),
-
                 FlatButton(
                   child: Text("douroku"),
                   onPressed: () {
-                    if(_formKey.currentState.validate()){
+                    if (_formKey.currentState.validate()) {
                       _formKey.currentState.save();
                       _createUser(context, email, password);
                     }
                   },
                 ),
-
                 FlatButton(
                   child: Text("Login"),
                   onPressed: () {
-                    if(_formKey.currentState.validate()){
+                    if (_formKey.currentState.validate()) {
                       _formKey.currentState.save();
                       _signIn(context, email, password);
                     }
@@ -151,48 +143,50 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             );
           });
-    }else{
-      showDialog(context: context,
-        builder: (context){
-        return AlertDialog(
-          title: Text("확인다이얼로그"),
-          content: Text(firebaseUser.email + " 로그인 중이다"),
-          actions: <Widget>[
-            FlatButton(
-              child: Text("Cancle"),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-
-            FlatButton(
-              child: Text("SignOut"),
-              onPressed: () {
-                _auth.signOut();
-                Navigator.pushNamedAndRemoveUntil(context, "/",(_) => false);
-              },
-            ),
-          ],
-        );
-        }
-      );
+    } else {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text("확인다이얼로그"),
+              content: Text(firebaseUser.email + " 로그인 중이다"),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("Cancle"),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                FlatButton(
+                  child: Text("SignOut"),
+                  onPressed: () {
+                    _auth.signOut();
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, "/", (_) => false);
+                  },
+                ),
+              ],
+            );
+          });
     }
   }
-  void _signIn(BuildContext context, String email, String password) async{
-    try{
+
+  void _signIn(BuildContext context, String email, String password) async {
+    try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-      Navigator.pushNamedAndRemoveUntil(context, "/", (_)=> false);
-    }catch(e){
+      Navigator.pushNamedAndRemoveUntil(context, "/", (_) => false);
+    } catch (e) {
       Fluttertoast.showToast(msg: "Firebase Login Failed");
     }
   }
 
   void _createUser(BuildContext context, String email, String password) async {
-    try{
-      await _auth.createUserWithEmailAndPassword(email: email, password: password);
+    try {
+      await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
       Navigator.pushNamedAndRemoveUntil(context, "/", (_) => false);
-    }catch(e){
-
+    } catch (e) {
+      Fluttertoast.showToast(msg: "Firebase Login Failed");
     }
   }
 
@@ -214,7 +208,12 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Padding(
         padding: EdgeInsets.all(8.0),
         child: StreamBuilder<QuerySnapshot>(
-            stream: Firestore.instance.collection("kasikari-memo").snapshots(),
+//            stream: Firestore.instance.collection("kasikari-memo").snapshots(),
+            stream: Firestore.instance
+                .collection('users')
+                .document(firebaseUser.uid)
+                .collection("transaction")
+                .snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Center(
@@ -243,7 +242,10 @@ class _MyHomePageState extends State<MyHomePage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => InputForm(null),
+                builder: (context) => InputForm(
+                      document: null,
+                      firebaseUser: firebaseUser,
+                    ),
                 settings: new RouteSettings(name: "/new")),
           );
         },
@@ -285,7 +287,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => InputForm(document),
+                            builder: (context) => InputForm(
+                                  document: document,
+                                  firebaseUser: firebaseUser,
+                                ),
                             settings: new RouteSettings(name: "/edit")));
                   },
                 ),
