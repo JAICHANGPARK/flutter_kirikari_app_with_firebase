@@ -39,6 +39,7 @@ class _InputFormState extends State<InputForm> {
 
   @override
   Widget build(BuildContext context) {
+    bool deleteFlag = false;
     DocumentReference _mainReference;
     _mainReference = Firestore.instance.collection("kasikari-memo").document();
     if(widget.document != null){
@@ -50,6 +51,9 @@ class _InputFormState extends State<InputForm> {
       }
       _mainReference = Firestore.instance.collection('kasikari-memo')
       .document(widget.document.documentID);
+
+      deleteFlag = true;
+
     }
     return Scaffold(
       appBar: AppBar(
@@ -75,11 +79,11 @@ class _InputFormState extends State<InputForm> {
             },
           ),
           IconButton(
-            icon: Icon(Icons.delete),
-            onPressed: () {
-              Scaffold.of(context)
-                  .showSnackBar(new SnackBar(content: Text("削除ボタンを押しました")));
-            },
+            icon: Icon(Icons.delete, color: Colors.white,),
+            onPressed: !deleteFlag ? null : (){
+              _mainReference.delete();
+              Navigator.pop(context);
+            }
           )
         ],
       ),
