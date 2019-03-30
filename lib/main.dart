@@ -78,8 +78,8 @@ class _MyHomePageState extends State<MyHomePage> {
         children: <Widget>[
           ListTile(
             leading: const Icon(Icons.memory),
-            title: Text("【 " + (document['borrowOrLend'] == "lend"?"貸":"借" +
-            " 】" + document['stuff'])),
+            title: Text("【 " + (document['borrowOrLend'] == "lend"?"貸":"借") +
+            " 】" + document['stuff']),
             subtitle: Text(" 期限 : " + document['date'].toString().substring(0, 10)
             + "\n 相手 : " + document['user']),
           )
