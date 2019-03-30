@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() => runApp(MyApp());
 
@@ -36,11 +37,31 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text("リスト画面"),
       ),
-      body: Padding(padding: EdgeInsets.all(8.0),
-        child: StreamBuilder(
-            stream: null,
-            builder: null),
-
+      body: Padding(
+        padding: EdgeInsets.all(8.0),
+        child: StreamBuilder<QuerySnapshot>(
+            stream: Firestore.instance.collection("kasikari-memo").snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      CircularProgressIndicator(),
+                      Text("Loding..."),
+                    ],
+                  ),
+                );
+              } else {
+                return ListView.builder(
+                  padding: EdgeInsets.only(top: 18.0),
+                    itemCount: snapshot.data.documents.length,
+                    itemBuilder: (context, index){
+                      return _buildListItem(context, snapshot.data.documents[index]);
+                    });
+              }
+            }),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
@@ -49,4 +70,22 @@ class _MyHomePageState extends State<MyHomePage> {
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+
+  Widget _buildListItem(BuildContext context, DocumentSnapshot document){
+    return Card(
+      child:Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          ListTile(
+            leading: const Icon(Icons.memory),
+            title: Text("【 " + (document['borrowOrLend'] == "lend"?"貸":"借" +
+            " 】" + document['stuff'])),
+            subtitle: Text(" 期限 : " + document['data'].toString().substring(0, 10)
+            + "\n 相手 : " + document['user']),
+          )
+        ],
+      ),
+    );
+  }
+
 }
