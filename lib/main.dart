@@ -64,11 +64,17 @@ class _MyHomePageState extends State<MyHomePage> {
               }
             }),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      floatingActionButton: FloatingActionButton(onPressed: (){
+        Navigator.push(context, MaterialPageRoute(builder: (context) => InputForm(),
+        settings: new RouteSettings(name: "/new")),
+        );
+      },
+      child: new Icon(Icons.check),),
+//      floatingActionButton: FloatingActionButton(
+//        onPressed: _incrementCounter,
+//        tooltip: 'Increment',
+//        child: Icon(Icons.add),
+//      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 
@@ -175,7 +181,7 @@ class _InputFormState extends State<InputForm> {
             ),
             TextFormField(
               decoration: new InputDecoration(
-                  icon: const Icon(Icons.person),
+                  icon: const Icon(Icons.business_center),
                   hintText: '借りたもの、貸したもの',
                   labelText: 'loan'
               ),
