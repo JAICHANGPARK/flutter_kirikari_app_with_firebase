@@ -24,6 +24,7 @@ if (flutterVersionName == null) {
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+ext { googlePlayServicesVersion = "15.0.1" }
 
 android {
     compileSdkVersion 28
@@ -44,7 +45,7 @@ android {
         targetSdkVersion 28
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
 
@@ -64,10 +65,15 @@ flutter {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
 
-    implementation 'com.google.firebase:firebase-core:16.0.1'
+    implementation 'com.google.firebase:firebase-core:16.0.4'
+//    implementation 'com.google.android.gms:play-services-basement:15.0.1'
+//    implementation 'com.google.android.gms:play-services-analytics:16.2.0'
+//    implementation 'com.google.android.gms:play-services-measurement:16.4.0'
+//    implementation 'com.google.android.gms:play-services-measurement-base:16.0.3'
+    implementation 'androidx.multidex:multidex:2.0.0'
 
 }
 apply plugin: 'com.google.gms.google-services'
