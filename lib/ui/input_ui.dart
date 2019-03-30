@@ -10,6 +10,10 @@ class _FormData {
 }
 
 class InputForm extends StatefulWidget {
+  final DocumentSnapshot document;
+
+  InputForm(this.document);
+
   @override
   _InputFormState createState() => _InputFormState();
 }
@@ -37,6 +41,16 @@ class _InputFormState extends State<InputForm> {
   Widget build(BuildContext context) {
     DocumentReference _mainReference;
     _mainReference = Firestore.instance.collection("kasikari-memo").document();
+    if(widget.document != null){
+      if(_data.user == null && _data.stuff == null){
+        _data.borrowOrLend = widget.document['borrowOrLend'];
+        _data.user = widget.document['user'];
+        _data.stuff = widget.document['stuff'];
+        _data.date = widget.document['date'];
+      }
+      _mainReference = Firestore.instance.collection('kasikari-memo')
+      .document(widget.document.documentID);
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text("かしかり入力"),
@@ -44,8 +58,8 @@ class _InputFormState extends State<InputForm> {
           IconButton(
             icon: Icon(Icons.save),
             onPressed: () {
-              Scaffold.of(context)
-                  .showSnackBar(new SnackBar(content: Text("保存ボタンを押しました")));
+//              Scaffold.of(context)
+//                  .showSnackBar(new SnackBar(content: Text("保存ボタンを押しました")));
               if(_formKey.currentState.validate()){
                 _formKey.currentState.save();
                 _mainReference.setData(
@@ -98,6 +112,16 @@ class _InputFormState extends State<InputForm> {
                       hintText: '相手の名前',
                       labelText: 'Name'
                   ),
+                  onSaved: (String value){
+                    _data.user = value;
+                  },
+                  validator: (value){
+                    if(value.isEmpty){
+                      return "名前は必修入力項目";
+
+                    }
+                  },
+                  initialValue: _data.user,
                 ),
                 TextFormField(
                   decoration: new InputDecoration(
@@ -105,6 +129,16 @@ class _InputFormState extends State<InputForm> {
                       hintText: '借りたもの、貸したもの',
                       labelText: 'loan'
                   ),
+                  onSaved: (String value){
+                    _data.stuff = value;
+                  },
+                  validator: (value){
+                    if(value.isEmpty){
+                      return "必修入力項目";
+
+                    }
+                  },
+                  initialValue: _data.stuff,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),

@@ -68,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
             }),
       ),
       floatingActionButton: FloatingActionButton(onPressed: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => InputForm(),
+        Navigator.push(context, MaterialPageRoute(builder: (context) => InputForm(null),
         settings: new RouteSettings(name: "/new")),
         );
       },
@@ -106,6 +106,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     Scaffold.of(context).showSnackBar(SnackBar(
                         content: Text("編集"
                             "ボタンを押しました")));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => InputForm(document),
+                    settings: new RouteSettings(name: "/edit")));
                   },
                 ),
               ],
