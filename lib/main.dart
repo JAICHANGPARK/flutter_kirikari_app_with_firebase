@@ -82,7 +82,23 @@ class _MyHomePageState extends State<MyHomePage> {
             " 】" + document['stuff']),
             subtitle: Text(" 期限 : " + document['date'].toString().substring(0, 10)
             + "\n 相手 : " + document['user']),
+          ),
+
+          ButtonTheme.bar(
+            child: ButtonBar(
+              children: <Widget>[
+                FlatButton(
+                  child: const Text("へんしゅう"),
+                  onPressed: (){
+                    Scaffold.of(context).showSnackBar(SnackBar(content: Text("編集"
+                        "ボタンを押しました")));
+                  },
+                ),
+
+              ],
+            ),
           )
+
         ],
       ),
     );
