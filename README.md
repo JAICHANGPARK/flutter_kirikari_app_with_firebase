@@ -2,6 +2,10 @@
 
 A new Flutter application.
 
+
+<img src="https://github.com/JAICHANGPARK/flutter_kirikari_app_with_firebase/blob/master/capture/-feature-graphic.png" />
+
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
